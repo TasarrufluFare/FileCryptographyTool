@@ -1,6 +1,7 @@
 from Crypto.Cipher import AES
 import base64
 import os
+from tkinter import messagebox
 
 
 def decrypter_method(given_file_path, given_pass_path):
@@ -31,11 +32,23 @@ def decrypter_method(given_file_path, given_pass_path):
         file.close()
 
         file_name_origin = given_file_path.split("/")[-1].split(".")[0]
-        os.mkdir(f"Decrypted {file_name_origin}")
-        decodeit = open(f'Decrypted {file_name_origin}/Decrypted New File.{file_extension}', 'wb')
+
+        path_to_create = f"Operations/{file_name_origin}/Decrypted {file_name_origin}"
+        #if not os.path.exists(path_to_create):
+        file_count = 0
+        while os.path.exists(path_to_create):
+            file_count = file_count + 1
+            path_to_create = f"Operations/{file_name_origin}" + f" ({file_count})" + f"/Decrypted {file_name_origin}"
+
+        os.makedirs(path_to_create)
+        decodeit = open(path_to_create+f'/Decrypted New File.{file_extension}', 'wb')
         decodeit.write(base64.b64decode(byte))
         decodeit.close()
         file_in.close()
 
     except():
         print("Something went wrong")
+        messagebox.showinfo("Warning!", "Something went wrong.\nCheck your password file.")
+
+
+
